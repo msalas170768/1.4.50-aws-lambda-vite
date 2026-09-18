@@ -1,5 +1,8 @@
 # ⚡ Todo List Serverless — AWS Lambda + DynamoDB + Vite
 
+- **Web:** https://tareas-serverless.vercel.app
+- **API:** https://eznac4dkd8.execute-api.us-east-1.amazonaws.com (p. ej. `GET /tasks`)
+
 ## 🎯 Objetivo del proyecto
 
 Construir una aplicación de tareas **100% serverless**: el backend es una función Lambda en Python con DynamoDB, la infraestructura se define con Terraform y el frontend Vite/React se despliega en Vercel.

@@ -19,5 +19,5 @@ variable "table_name" {
 variable "cors_allow_origins" {
   description = "Orígenes permitidos por CORS en API Gateway"
   type        = list(string)
-  default     = ["*"]
+  default     = ["https://tareas-serverless.vercel.app", "http://localhost:5173"]
 }
