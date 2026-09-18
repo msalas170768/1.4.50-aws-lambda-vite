@@ -54,15 +54,40 @@ Modelo: `{ id (UUID), title, completed, createdAt, updatedAt }`.
 3. **IAM de mínimo privilegio**: el rol de la Lambda solo tiene los permisos DynamoDB que usa (`PutItem`, `GetItem`, `UpdateItem`, `DeleteItem`, `Scan`) sobre esa tabla concreta.
 4. **El frontend recibe la URL de la API** vía `terraform output` → variable de entorno de Vite; el código no tiene URLs hardcodeadas.
 
+## 📁 Estructura
+
+```
+lambda/handler.py          # API REST: router + operaciones DynamoDB
+lambda/tests/              # tests del handler con DynamoDB simulada (moto)
+terraform/                 # providers, variables, dynamodb, iam, lambda, api_gateway, outputs
+scripts/smoke-test.sh      # prueba end-to-end de la API desplegada (curl)
+scripts/lambda-invoke.sh   # invoca la Lambda directamente con aws lambda invoke
+frontend/                  # Vite + React + TypeScript + Tailwind
+```
+
 ## 🚀 Cómo ejecutar
 
 ### Backend (AWS)
 
+Requiere un usuario IAM con permisos sobre IAM (roles), Lambda, DynamoDB, API Gateway v2 y CloudWatch Logs.
+
 ```bash
 cd terraform
 terraform init
-terraform apply        # crea DynamoDB + Lambda + API Gateway
-terraform output       # → URL pública de la API
+terraform apply -auto-approve   # crea DynamoDB + rol IAM + Lambda + API Gateway
+terraform output api_url        # → URL pública de la API
+```
+
+### Pruebas
+
+```bash
+# Tests unitarios de la Lambda (no necesitan AWS)
+pip install -r lambda/requirements-dev.txt
+pytest lambda/tests
+
+# Contra lo desplegado
+scripts/lambda-invoke.sh        # la Lambda responde a GET /health
+scripts/smoke-test.sh           # CRUD completo, errores 400/404 y CORS
 ```
 
 ### Frontend
@@ -70,10 +95,22 @@ terraform output       # → URL pública de la API
 ```bash
 cd frontend
 npm install
-# apunta VITE_API_URL a la URL del output de Terraform
-npm run dev            # local
-vercel deploy          # producción
+echo "VITE_API_URL=$(terraform -chdir=../terraform output -raw api_url)" > .env.local
+npm run dev                     # http://localhost:5173
+npm run build                   # comprobación de tipos + build de producción
 ```
+
+**Vercel:** importar el repositorio de GitHub con *Root Directory* `frontend`
+(Vite se detecta solo) y definir la variable `VITE_API_URL` con el output `api_url`.
+Cada push a `main` despliega a producción.
+
+### La web
+
+- Lista las tareas; permite crear, completar/reabrir, editar en línea (doble clic o lápiz) y eliminar.
+- Filtros Todas / Pendientes / Completadas con contadores y "Borrar completadas".
+- Actualizaciones optimistas: la UI responde al instante y se revierte si la API falla, con aviso.
+- Estados de carga, lista vacía y error con reintento; tema claro/oscuro; responsive y navegable con teclado.
+- Diseño de libreta escolar: renglones, línea roja de margen y un tachón a mano que se dibuja al completar.
 
 ### Limpieza
 

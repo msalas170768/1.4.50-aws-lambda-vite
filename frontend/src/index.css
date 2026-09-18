@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Libreta escolar: papel azulado, renglones azules, margen rojo, tinta azul marino */
+:root {
+  --paper: #eef2f6;
+  --sheet: #fbfcfd;
+  --ink: #1b2a4a;
+  --ink-soft: #56637d;
+  --rule: #c9d8e6;
+  --margin: #d63d55;
+  color-scheme: light;
+}
+
+.dark {
+  --paper: #0d1524;
+  --sheet: #142037;
+  --ink: #e7edf5;
+  --ink-soft: #97a5bd;
+  --rule: #253454;
+  --margin: #f0697d;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-rule: var(--rule);
+  --color-margin: var(--margin);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Tachón a mano: el trazo se dibuja al completar la tarea.
+   Es un fondo (no un SVG superpuesto) para que, con box-decoration-break,
+   cada línea de un título largo reciba su propio tachón. */
+:root {
+  --strike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M1 7 C 20 4, 38 9, 55 6 S 85 4, 99 6.5' fill='none' stroke='%23d63d55' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.dark {
+  --strike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M1 7 C 20 4, 38 9, 55 6 S 85 4, 99 6.5' fill='none' stroke='%23f0697d' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+.strike {
+  background-image: var(--strike);
+  background-repeat: no-repeat;
+  background-position: left 55%;
+  background-size: 0% 0.6em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 380ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.strike[data-on='true'] {
+  background-size: 100% 0.6em;
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.row-in {
+  animation: row-in 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strike {
+    transition: none;
+  }
+  .row-in {
+    animation: none;
+  }
+}

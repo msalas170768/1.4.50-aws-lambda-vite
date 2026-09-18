@@ -1,0 +1,29 @@
+# Terraform
+terraform/.terraform/
+terraform/build/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Node / Vite
+node_modules/
+frontend/dist/
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright MCP
+.playwright-mcp/
+*.tsbuildinfo
