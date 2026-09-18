@@ -1,0 +1,9 @@
+# Solo se despliega el frontend
+terraform/
+lambda/
+scripts/
+docs/
+.playwright-mcp/
+**/node_modules/
+frontend/dist/
+frontend/.env.local
