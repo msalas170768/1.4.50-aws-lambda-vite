@@ -39,6 +39,7 @@ resource "aws_apigatewayv2_route" "routes" {
 }
 
 resource "aws_apigatewayv2_stage" "default" {
+  provider    = aws.untagged
   api_id      = aws_apigatewayv2_api.http.id
   name        = "$default"
   auto_deploy = true

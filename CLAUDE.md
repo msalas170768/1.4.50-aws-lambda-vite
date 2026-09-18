@@ -16,11 +16,10 @@ README.md                # documentación del proyecto (actualizar al terminar)
 ## Prerrequisitos (verificar antes de desplegar)
 
 - Región AWS: `us-east-1`. Cuenta: `934526323130`, usuario IAM `chelosalas170768`.
-- **Permisos IAM pendientes**: el usuario hoy NO tiene `iam:CreateRole`,
-  `logs:CreateLogGroup`, `dynamodb:DescribeTable` ni `lambda:GetFunction` (comprobado:
-  `terraform apply` falla con `AccessDenied`). Hace falta que se le concedan permisos sobre
-  IAM (roles/policies), Lambda, DynamoDB, API Gateway v2 y CloudWatch Logs, o bien usar un
-  rol de ejecución ya existente pasado como variable.
+- **Permisos IAM**: el usuario tiene la política inline `todo-serverless-deployer`
+  (`docs/deployer-policy.json`), limitada a los recursos `todo-serverless-*` / `todo-tasks`.
+  Crear un stage de API Gateway v2 con etiquetas exige `apigateway:TagResource`, que el
+  editor IAM no admite: por eso el stage usa el provider `aws.untagged`.
 - Herramientas: Terraform ≥ 1.5, AWS CLI, Node ≥ 20, `gh`, Vercel CLI (`npx vercel`).
 - GitHub: usar la cuenta `msalas170768` (`gh auth switch -u msalas170768`).
 - Vercel: requiere `vercel login` interactivo (o `VERCEL_TOKEN`).
